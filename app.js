@@ -9,9 +9,8 @@ import { json as requestJson } from 'd3-request';
 
 // Set your mapbox token here
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWFyY2VscmVib3VjYXMiLCJhIjoiY2o3eGZkYm5rMTd2bDJ3bzJ4enN6czRkdSJ9.GtCF9r--onL2FkjK7ETj4A';
-const VISIT_COLOR = [136, 176, 75];
-const GPS_COLOR = [50, 234, 75];
-const DURATION = 60000 //ms
+const VISIT_COLOR = [255, 96, 128];
+const GPS_COLOR = [96, 128, 255];
 
 // Source data CSV
 const DATA_URL = 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/scatterplot/manhattan.json';
@@ -111,7 +110,8 @@ class Root extends Component {
           visitColor={VISIT_COLOR}
           gpsColor={GPS_COLOR}
           radius={30}
-        />
+          strokeWidth={5}
+        /> 
       </MapGL>
     );
   }

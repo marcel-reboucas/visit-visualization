@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import DeckGL, {ScatterplotLayer} from 'deck.gl';
+import DeckGL, {ScatterplotLayer, ArcLayer } from 'deck.gl';
 
 export default class DeckGLOverlay extends Component {
 
@@ -15,27 +15,76 @@ export default class DeckGLOverlay extends Component {
     };
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      arcs: this._getArcs(props)
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data !== this.props.data) {
+      this.setState({
+        arcs: this._getArcs(nextProps)
+      });
+    }
+  }
+
+  //generates arcs from data
+  _getArcs({ data }) {
+    if (!data) {
+      return null;
+    }
+
+    var arcs = [];
+
+    data.forEach(function (value, i) {
+      var point = data[i];
+      var dest = (i != data.length - 1) ? data[i + 1] : point;
+      
+      arcs.push({...point, 
+        dest_lat: dest.lat, 
+        dest_lng: dest.lng, 
+        dest_type: dest.type
+      });
+    });
+
+    return arcs;
+  }
+
   render() {
-    const { viewport, data, visitColor, gpsColor, radius } = this.props;
+    const { viewport, data, visitColor, gpsColor, radius, strokeWidth } = this.props;
+    const { arcs } = this.state;
 
     if (!data) {
       return null;
     }
 
-    const layer = new ScatterplotLayer({
-      id: 'scatter-plot',
-      data,
-      radiusScale: radius,
-      radiusMinPixels: 0.24,
-      getPosition: d => [d.lng, d.lat, 0],
-      getColor: d => d.type == 'visit' ? visitColor : gpsColor,
-      getRadius: d => 2,
-      pickable: true,
-      onHover: info => console.log('Hovered:', info)
-    });
+    const layers = [
+      new ScatterplotLayer({
+        id: 'scatter-plot',
+        data,
+        radiusScale: radius,
+        radiusMinPixels: 0.24,
+        getPosition: d => [d.lng, d.lat, 0],
+        getColor: d => d.type == 'visit' ? visitColor : gpsColor,
+        getRadius: d => 3,
+        pickable: true,
+        onHover: info => console.log('Hovered:', info)
+      }), 
+      new ArcLayer({
+        id: 'arc',
+        data: arcs,
+        getSourcePosition: d => [d.lng, d.lat],
+        getTargetPosition: d => [d.dest_lng, d.dest_lat],
+        getSourceColor: d => d.type == 'visit' ? visitColor : gpsColor,
+        getTargetColor: d => d.dest_type == 'visit' ? visitColor : gpsColor,
+        strokeWidth
+      })
+    ];
 
     return (
-      <DeckGL {...viewport} layers={ [layer] } />
+      <DeckGL {...viewport} layers={ layers } />
     );
   }
 }
