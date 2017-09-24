@@ -1,7 +1,7 @@
 /* global window,document */
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import MapGL from 'react-map-gl';
+import MapGL, { Popup } from 'react-map-gl';
 import DeckGLOverlay from './deckgl-overlay.js';
 import Papa from 'papaparse';
 
@@ -53,33 +53,31 @@ class Root extends Component {
           data: response, 
           viewport: viewport}
         );
+      } else {
+        console.debug(error);
       }
     });
   }
 
   readFile(file, onCompletion) {
     var rawFile = new XMLHttpRequest();
-		rawFile.open("GET", file, true);
+    rawFile.open("GET", file, true);
+    
 		rawFile.onreadystatechange = () => {
-      if (rawFile.readyState === 4 && 
-         (rawFile.status === 200 || rawFile.status == 0)) {
-					var allText = rawFile.responseText;
-					this.parseCSV(allText, onCompletion);
-      } 
-      // todo: error
+      Papa.parse(rawFile.responseText, {
+        header: true,
+        dynamicTyping: true,
+        complete: function(results) {
+          console.log(results);
+          onCompletion(null, results.data);
+        }
+      });
     };
-    rawFile.send(null);
-  }
 
-  parseCSV(csvString, onCompletion) {
-    Papa.parse(csvString, {
-      header: true,
-      dynamicTyping: true,
-      complete: function(results) {
-        console.log(results);
-        onCompletion(null, results.data)
-      }
-    });
+    rawFile.onerror = (target, error) => {
+      onCompletion(error, null)
+    }
+    rawFile.send(null);
   }
 
   componentDidMount() {
