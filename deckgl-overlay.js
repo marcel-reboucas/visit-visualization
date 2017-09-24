@@ -36,11 +36,16 @@ export default class DeckGLOverlay extends Component {
       return null;
     }
 
+    var sortedData = data;
+    sortedData.sort(function(a, b) {
+      return a.timestamp - b.timestamp;
+    });
+
     var arcs = [];
 
-    data.forEach(function (value, i) {
-      var point = data[i];
-      var dest = (i != data.length - 1) ? data[i + 1] : point;
+    sortedData.forEach(function (value, i) {
+      var point = sortedData[i];
+      var dest = (i != sortedData.length - 1) ? sortedData[i + 1] : point;
       
       arcs.push({...point, 
         dest_lat: dest.lat, 
