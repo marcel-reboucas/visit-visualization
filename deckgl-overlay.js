@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import DeckGL, {ScatterplotLayer, ArcLayer } from 'deck.gl';
+import DeckGL, {ScatterplotLayer, ArcLayer, HexagonLayer } from 'deck.gl';
 
 export default class DeckGLOverlay extends Component {
 
@@ -66,6 +66,13 @@ export default class DeckGLOverlay extends Component {
     }
 
     const layers = [
+      // new HexagonLayer({
+      //   id: 'hexagon-layer',
+      //   data,
+      //   getPosition: d => [d.lng, d.lat],
+      //   radius: 500,
+      //   opacity: 0.1
+      // }),
       new ScatterplotLayer({
         id: 'scatter-plot',
         data,
