@@ -51,13 +51,23 @@ class Root extends Component {
         }
 
         this.setState({
-          data: response, 
+          data: this.filterResponse(response), 
           viewport: viewport}
         );
       } else {
         console.debug(error);
       }
     });
+  }
+
+  filterResponse(response) {
+    //remove equal timestamps
+    var filtered = response.filter(
+      (elt, i, a) => i === a.findIndex(
+        elt2 => elt.timestamp === elt2.timestamp
+      )
+    );
+    return filtered;
   }
 
   readFile(file, onCompletion) {
