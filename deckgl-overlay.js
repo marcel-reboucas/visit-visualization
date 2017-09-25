@@ -50,7 +50,7 @@ export default class DeckGLOverlay extends Component {
       arcs.push({...point, 
         dest_lat: dest.lat, 
         dest_lng: dest.lng, 
-        dest_type: dest.type
+        dest_event_type: dest.event_type
       });
     });
 
@@ -79,7 +79,7 @@ export default class DeckGLOverlay extends Component {
         radiusScale: radius,
         radiusMinPixels: 0.24,
         getPosition: d => [d.lng, d.lat, 0],
-        getColor: d => d.type == 'visit' ? visitColor : gpsColor,
+        getColor: d => d.event_type == 'VISIT' ? visitColor : gpsColor,
         getRadius: d => 3,
         pickable: true,
         onHover: info => console.log('Hovered:', info)
@@ -89,8 +89,8 @@ export default class DeckGLOverlay extends Component {
         data: arcs,
         getSourcePosition: d => [d.lng, d.lat],
         getTargetPosition: d => [d.dest_lng, d.dest_lat],
-        getSourceColor: d => d.type == 'visit' ? visitColor : gpsColor,
-        getTargetColor: d => d.dest_type == 'visit' ? visitColor : gpsColor,
+        getSourceColor: d => d.event_type == 'VISIT' ? visitColor : gpsColor,
+        getTargetColor: d => d.dest_event_type == 'VISIT' ? visitColor : gpsColor,
         strokeWidth
       })
     ];

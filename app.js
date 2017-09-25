@@ -40,8 +40,8 @@ class Root extends Component {
     // });
 
     this.readFile(FILE_PATH, (error, response) => {
+
       if (!error) {
-        
         var viewport = this.state.viewport;
 
         if (response.length > 0) {
@@ -113,8 +113,8 @@ class Root extends Component {
           data={data}
           visitColor={VISIT_COLOR}
           gpsColor={GPS_COLOR}
-          radius={30}
-          strokeWidth={5}
+          radius={10}
+          strokeWidth={3}
         /> 
       </MapGL>
     );
